@@ -1,2 +1,0 @@
-# ocr
-Created with CodeSandbox
