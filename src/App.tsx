@@ -7,7 +7,8 @@ export const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       fetch("https://api.mydomain.com").then(response =>
-        console.log("hishishi", response)
+      console.log("dummy change")  
+      console.log("hishishi", response)
       );
     };
     fetchData();
