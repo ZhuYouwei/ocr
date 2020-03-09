@@ -23,10 +23,12 @@ function beforeUpload(file) {
 }
 
 export class ImageUpload extends React.Component<{
-  onFileUpload: (file: File) => void;
-}> {
+  onFileUpload: (_: string) => void;
+},
+    {loading: boolean,imageUrl:string}> {
   state = {
-    loading: false
+    loading: false,
+    imageUrl: ""
   };
 
   handleChange = info => {
@@ -37,12 +39,17 @@ export class ImageUpload extends React.Component<{
     if (info.file.status === "done") {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, imageUrl =>
+      {
         this.setState({
           imageUrl,
           loading: false
-        })
-      );
-      this.props.onFileUpload(info.file.originFileObj);
+        });
+        console.log("setUrl",imageUrl)
+        this.props.onFileUpload(imageUrl);
+      }
+
+
+    );
     }
   };
 
@@ -64,7 +71,7 @@ export class ImageUpload extends React.Component<{
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >
-        {imageUrl ? (
+        {imageUrl !== "" ? (
           <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
         ) : (
           uploadButton

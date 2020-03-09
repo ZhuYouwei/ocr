@@ -1,17 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { ImageUpload } from "./ImageUpload";
+import {createWorker} from "tesseract.js";
+
+const worker = createWorker({
+  logger: m => console.log(m),
+});
 
 export const App = () => {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<string | null>(null);
+  const [ocr, setOcr] = useState('没有识别到文字...');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      fetch("https://api.mydomain.com").then(response =>
-        console.log("hishishi", response)
-      );
+  useEffect(()=>{
+    const _ = async ()=>{
+      await worker.load();
+      await worker.loadLanguage('chi_sim');
+      await worker.initialize('chi_sim');
     };
-    fetchData();
-  }, [file]);
+    _();
+  },[]);
+  const doOCR = async (file: string) => {
+    const { data: { text } } = await worker.recognize(file);
+    setOcr(text);
+  };
+  useEffect(() => {
+    if (file){
+      console.log("start recognizing")
+      doOCR(file);
+    } else {
+      console.log("no file")
+    }
+  },[file]);
 
-  return <ImageUpload onFileUpload={setFile} />;
+  return (
+      <div>
+        <ImageUpload onFileUpload={setFile} />
+        <p>{ocr}</p>
+      </div>
+  );
 };
