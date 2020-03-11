@@ -1,41 +1,43 @@
 import React, {useState} from "react";
-import {ImageUpload} from "./component/ImageUpload";
+import {getBase64, ImageUpload} from "./component/ImageUpload";
 import {UploadFile} from "antd/lib/upload/interface";
 import {useMsftOcr} from "./hooks";
 import ReactJson from 'react-json-view'
 
 export const App = () => {
-    //use with useTesseract
+    //with Tesseract
     // const [imageUrl, setImageUrl] = useState<string | null>(null);
     // const res = useTesseract(imageUrl);
-    // const onChangeT = (file: UploadFile<File>) => {
-    //     getBase64(file.originFileObj, setImageUrl);
-    // };
+    // const onChange = onChangeSetStr(setImageUrl);
 
-    //use with Microsoft Computer VISION API
+    //with Microsoft Computer vision API
     const [image, setImage] = useState<File | null>(null);
     const res = useMsftOcr(image);
-    const onChangeMS = (file: UploadFile<File>) => {
-        if (file.status === "done") {
-            setImage(file.originFileObj as File);
-        }
-    };
-    if (!isAuthenticated()){
+    const onChange = onChangeSetFile(setImage);
+    if (!isAuthenticated()) {
         return (<h1>404 Not Found</h1>)
     }
     return (
-
         <div>
-            <ImageUpload onChange={onChangeMS}/>
+            <ImageUpload onChange={onChange}/>
             <ReactJson src={res}/>
         </div>
-
     );
 };
 
+const onChangeSetFile = (func: (f: File) => void) => (file: UploadFile<File>): void => {
+    if (file.status === "done") {
+        func(file.originFileObj as File);
+    }
+};
+const onChangeSetStr = (func: (url: string | null) => void) => (file: UploadFile<File>): void => {
+    if (file.status === "done") {
+        getBase64(file.originFileObj, func);
+    }
+};
 const isAuthenticated = (): boolean => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const userName = urlParams.get('userName');
     return userName === process.env.REACT_APP_USERNAME;
-}
+};

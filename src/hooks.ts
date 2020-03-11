@@ -1,49 +1,43 @@
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {createWorker} from "tesseract.js";
 import axios from "axios";
 import {OcrResult} from "@azure/cognitiveservices-computervision/esm/models";
 
+
 export const useTesseract = (image: string | null) => {
-    const [ocr, setOcr] = useState('没有识别到文字...');
+    const [ocr, setOcr] = useState<{ data: any }>({data: '没有识别到文字...'});
     const worker = createWorker({
         logger: m => console.log(m),
     });
-
     useEffect(() => {
         if (image != null) {
             (async () => {
-                setOcr("正在识别。。。");
+                setOcr({data: "正在识别。。。"});
                 await worker.load();
                 await worker.loadLanguage('eng');
                 await worker.initialize('eng');
-                const {data: {text}} = await worker.recognize(image);
-                setOcr(text);
-                await worker.terminate();
             })();
         }
-        return () => {
-            worker.terminate()
-        };
     }, [image]);
 
-    const doOCR = async (file: string) => {
-        const {data: {text}} = await worker.recognize(file);
-        setOcr(text);
-    };
-
     useEffect(() => {
+        const doOCR = async (file: string) => {
+            const res = await worker.recognize(file);
+            setOcr(res);
+        };
         if (image) {
             console.log("start recognizing")
             doOCR(image);
         } else {
             console.log("no file")
         }
+        return () => {
+            worker.terminate()
+        };
     }, [image]);
 
     return ocr;
 };
-
-
 
 export const useMsftOcr = (image: File | string | null) => {
     const [ocr, setOcr] = useState<any>({data: '没有识别到文字...'});
@@ -68,7 +62,7 @@ export const useMsftOcr = (image: File | string | null) => {
                     },
                     data: image
                 });
-                if (res.status === 200){
+                if (res.status === 200) {
                     console.log(res.data)
                     setOcr(getDisplayResult(res.data));
                 } else {
