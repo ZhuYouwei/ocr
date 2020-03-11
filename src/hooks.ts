@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react";
 import {createWorker} from "tesseract.js";
 import axios from "axios";
+import {OcrResult} from "@azure/cognitiveservices-computervision/esm/models";
 
 export const useTesseract = (image: string | null) => {
     const [ocr, setOcr] = useState('没有识别到文字...');
@@ -45,11 +46,11 @@ export const useTesseract = (image: string | null) => {
 
 
 export const useMsftOcr = (image: File | string | null) => {
-    const [ocr, setOcr] = useState({data: '没有识别到文字...'});
-    const ENDPOINT = process.env['ENDPOINT'];
-    const KEY = process.env['KEY'];
+    const [ocr, setOcr] = useState<any>({data: '没有识别到文字...'});
+    const ENDPOINT = process.env['REACT_APP_ENDPOINT'];
+    const KEY = process.env['REACT_APP_KEY'];
 
-    if (!KEY) {
+    if (!KEY || !ENDPOINT) {
         throw new Error('Set your environment variables for your subscription key and endpoint.');
     }
 
@@ -68,7 +69,8 @@ export const useMsftOcr = (image: File | string | null) => {
                     data: image
                 });
                 if (res.status === 200){
-                    setOcr({data: res.data});
+                    console.log(res.data)
+                    setOcr(getDisplayResult(res.data));
                 } else {
                     setOcr({data: "识别失败。。。"});
                 }
@@ -78,3 +80,13 @@ export const useMsftOcr = (image: File | string | null) => {
     }, [image]);
     return ocr;
 };
+
+const getDisplayResult = (res: OcrResult) =>
+    ({
+        data: res.regions?.map(r => ({
+            region: r.lines?.map(l => ({
+                line: l.words?.map(w => w.text)
+            }))
+        }))
+    })
+
