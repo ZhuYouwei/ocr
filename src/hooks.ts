@@ -48,7 +48,7 @@ export const useMsftOcr = (image: File | string | null) => {
         throw new Error('Set your environment variables for your subscription key and endpoint.');
     }
 
-    const uriBase = ENDPOINT + "vision/v2.0/ocr?language=unk&detectOrientation=true";
+    const uriBase = ENDPOINT + "vision/v2.0/ocr?language=zh-Hans&detectOrientation=true";
     useEffect(() => {
         if (image != null) {
             setOcr({data: "正在检测。。。"});
@@ -64,7 +64,7 @@ export const useMsftOcr = (image: File | string | null) => {
                 });
                 if (res.status === 200) {
                     console.log(res.data)
-                    setOcr(getDisplayResult(res.data));
+                    setOcr(res.data);
                 } else {
                     setOcr({data: "识别失败。。。"});
                 }
@@ -74,13 +74,3 @@ export const useMsftOcr = (image: File | string | null) => {
     }, [image]);
     return ocr;
 };
-
-const getDisplayResult = (res: OcrResult) =>
-    ({
-        data: res.regions?.map(r => ({
-            region: r.lines?.map(l => ({
-                line: l.words?.map(w => w.text)
-            }))
-        }))
-    })
-

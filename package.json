@@ -12,8 +12,9 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-json-view": "^1.19.1",
-    "react-router-dom": "^5.1.2",
-    "tesseract.js": "^2.0.2"
+    "tesseract.js": "^2.0.2",
+    "ag-grid-community": "^23.0.2",
+    "ag-grid-react": "^23.0.2"
   },
   "devDependencies": {
     "@types/react": "^16.9.19",

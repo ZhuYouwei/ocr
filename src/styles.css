@@ -1,4 +1,8 @@
 .App {
-  font-family: sans-serif;
-  text-align: center;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.cell-wrap-text {
+    white-space: normal !important;
 }

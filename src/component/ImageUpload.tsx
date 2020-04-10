@@ -55,7 +55,7 @@ export class ImageUpload extends React.Component<{
         onChange={this._handleChange}
       >
         {imageUrl !== "" ? (
-          <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
+          <img src={imageUrl} alt="avatar" style={{width: "100%"}}/>
         ) : (
           uploadButton
         )}
