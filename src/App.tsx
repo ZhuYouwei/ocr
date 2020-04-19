@@ -79,13 +79,12 @@ export const App = () => {
     }
     return (
         <div>
-            <h1>上传图片</h1>
+            <h1>图书馆文字识别流程优化</h1>
+
+            <h2>上传图片</h2>
             <ImageUpload onChange={onChange}/>
 
-            {/*<h1>Json Result</h1>*/}
-            {/*<ReactJson src={getJsonDisplayResult(ocrResult)}/>*/}
-
-            <h1>识别结果</h1>
+            <h2>识别结果</h2>
             <div className="ag-theme-alpine" style={{height: '600px'}}>
                 <AgGridReact
                     columnDefs={colDef}
@@ -101,7 +100,7 @@ export const App = () => {
                 </AgGridReact>
             </div>
 
-            <h1>点击行进行编辑</h1>
+            <h2>点击行进行编辑</h2>
             <div style={{paddingTop: '30px'}}>
                 <TextArea
                     autoSize={true}
@@ -109,6 +108,9 @@ export const App = () => {
                     onChange={onInputChange}
                 />
             </div>
+
+            {/*<h2>Json Result</h2>*/}
+            {/*<ReactJson src={getJsonDisplayResult(ocrResult)}/>*/}
 
 
         </div>
